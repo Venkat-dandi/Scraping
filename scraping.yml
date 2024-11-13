@@ -1,0 +1,32 @@
+name: Web Scraping
+
+on:
+  schedule:
+    - cron: '0 * * * *'  # Runs every hour
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Run scraping script
+        run: python scrape.py
+
+      - name: Post data to Django server
+        run: |
+          curl -X POST http://your-django-server.com/api/news/ \
+          -H "Content-Type: application/json" \
+          -d @news_data.json
